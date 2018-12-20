@@ -9,6 +9,7 @@ package org.usfirst.frc.team2586.robot;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -24,19 +25,22 @@ public class Robot extends TimedRobot {
 	WPI_TalonSRX right;
 	String[] motorVals;
 	Scanner scan;
-	File input;
+	File input, output;
+	PrintWriter print;
 	int tickNumber = 0;
 
 
 	public void robotInit() {
 		try {
-		input = new File("/home/lvuser/autoScripts/OUTPUT.txt");
+		input = new File("/home/lvuser/autoScripts/INPUT.txt");
+		output = new File("/home/lvuser/autoScripts/OUTPUT.txt");
 		left = new WPI_TalonSRX(3);
 		right = new WPI_TalonSRX(5);
+		print = new PrintWriter(output);
 		scan = new Scanner(input);
 		motorVals = new String[1000];
 		
-		for(int i = 0; i<250; i++) {
+		for(int i = 0; i<750; i++) {
 		motorVals[i] = scan.nextLine();
 		}
 		}catch(IOException e) {
@@ -56,7 +60,11 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		left.set(Float.parseFloat(motorVals[tickNumber]));
 		right.set(Float.parseFloat(motorVals[tickNumber]));
+		print.write(motorVals[tickNumber]);
 		tickNumber++;
+//		if(tickNumber > 749) {
+//			print.close();
+//		}
 	}
 
 	public void testPeriodic() {
